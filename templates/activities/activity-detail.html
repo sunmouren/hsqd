@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    活动详情
+{% endblock %}
+
+
+{% block content %}
+    <h6 class="border-bottom border-gray text-success pb-2 mb-3">活动名称</h6>
+    <h5 class="card-title">
+        {{ activity.title }}
+    </h5>
+
+    <h6 class="border-bottom border-gray text-success pb-2 mt-3 mb-3">活动地点</h6>
+    <h5 class="card-title">
+        {{ activity.address }}
+    </h5>
+
+    <h6 class="border-bottom border-gray text-success pb-2 mt-3 mb-3">活动时间</h6>
+    <h5 class="card-title">
+        {{ activity.start_time }}
+    </h5>
+    <h6 class="border-bottom border-gray text-success pb-2 mt-3 mb-3">活动状态</h6>
+    <h5 class="card-title">
+        {% if activity.is_active %}
+            正在进行签到
+        {% else %}
+            未开始签到
+        {% endif %}
+    </h5>
+
+{% endblock %}
+
+{% block sidebar %}
+    <h6 class="border-bottom border-gray pb-2 mb-3">创作者</h6>
+        <div class="media text-muted">
+
+            <img src="{{ activity.creator.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+
+            <div class="media-body pb-3 mb-0 small lh-125">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <strong class="text-gray-dark">
+                    <a href="{{ activity.creator.get_absolute_url }}">
+                        {{ activity.creator }}
+                    </a>
+                    </strong>
+
+                </div>
+                <span class="d-block">{{ activity.creator.date_joined|timesince }}前加入</span>
+            </div>
+
+
+        </div>
+
+            {% ifequal activity.creator request.user %}
+                {% if activity.is_active %}
+                    <button data-aid="{{ activity.id }}"
+                            data-action="deactivate"
+                            class="btn btn-outline-info btn-sm d-block activeState">
+                        停止签到
+                    </button>
+                {% else %}
+                     <button data-aid="{{ activity.id }}"
+                             data-action="activate"
+                             class="btn btn-outline-info btn-sm d-block activeState">
+                        开启签到
+                    </button>
+                {% endif %}
+            {% endifequal %}
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+        $('button.activeState').click(function () {
+            var aid = $(this).data('aid');
+            var action = $(this).data('action');
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/activity/activate/',
+                data: {'aid': aid, 'action': action},
+                async: true,
+                success: function (data) {
+                    if (data.msg === 'ok'){
+                        location.reload();
+                        return true;
+                    } else {
+                        tips('操作失败', 'danger');
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load activity_tags %}
+
+{% block title %}
+    活动列表
+{% endblock %}
+
+
+{% block content %}
+    <h6 class="border-bottom border-gray pb-2 mb-0">最新活动</h6>
+    {% for activity in activities %}
+        <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+            <div class="card border-0">
+              <div class="card-body bg-light">
+                  <h5 class="card-title mb-3">
+                      <a href="{{ activity.get_absolute_url }}">{{ activity.title }}</a>
+                  </h5>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      地点: {{ activity.address }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      时间: {{ activity.start_time }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      创建者: {{ activity.creator }}
+                  </h6>
+                  {% if request.user.is_authenticated %}
+                      {% is_joined_activity request.user activity as is_joined %}
+                      <button type="button"
+                              data-acid="{{ activity.id }}"
+                              data-action="{% if is_joined %}un{% endif %}join"
+                              class="btn btn-sm join_activity {% if is_joined %}btn-outline-success{% else %}btn-outline-danger{% endif %}">
+                          {% if is_joined %}
+                              已加入活动
+                          {% else %}
+                              加入活动
+                          {% endif %}
+                      </button>
+                  {% endif %}
+              </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+        $('button.join_activity').click(function () {
+            var $this = $(this);
+            var $acid = $this.data('acid');
+            var $action = $this.data('action');
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/activity/list/',
+                data: {'acid': $acid, 'action': $action},
+                async: true,
+                success: function (data) {
+                    if (data.msg === 'ok'){
+                        if ($action === 'join'){
+                            tips('加入成功~', 'success');
+                            $this.data('action', 'unjoin');
+                            $this.html("已加入活动");
+                            if ($this.hasClass("btn-outline-danger")){
+                                $this.removeClass("btn-outline-danger");
+                                $this.addClass("btn-outline-success");
+                            }
+                        } else {
+                            tips('退出成功~', 'success');
+                            $this.data('action', 'join');
+                            $this.html("加入活动");
+                            if ($this.hasClass("btn-outline-success")){
+                                $this.removeClass("btn-outline-success");
+                                $this.addClass("btn-outline-danger");
+                            }
+                        }
+                    } else {
+                        tips('操作失败~, 请稍后重试', 'danger');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    文章列表
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="post-list">
+        <h6 class="border-bottom border-gray pb-2 mb-0">最新文章</h6>
+        {% for post in posts %}
+            <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+                <div class="card border-0">
+                  <div class="card-body bg-light">
+                    <h5 class="card-title">
+                        <a href="{{ post.get_absolute_url }}">
+                            {{ post.title }}
+                        </a>
+                    </h5>
+                    <h6 class="card-subtitle mb-3 mt-3 text-muted">
+                        创作者: <a href="{{ post.user.get_absolute_url }}">{{ post.user }}</a>
+                    </h6>
+                     <h6 class="card-subtitle mb-3 mt-3 text-muted text-truncate">
+                        {{ post.body }}
+                    </h6>
+                    <span class="card-link text-muted">发布于: {{ post.created }}</span>
+{#                    <a target="_blank" href="{{ course.get_absolute_url }}" class="card-link">查看详情</a>#}
+                  </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

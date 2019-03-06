@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/post-css.css' %}" />
+{% endblock %}
+
+{% block title %}
+    写博客
+{% endblock %}
+
+
+{% block content %}
+    <h6 class="border-bottom border-gray pb-2 mb-3">
+        <i class="fa fa-edit" aria-hidden="true"></i> 写博客
+    </h6>
+
+{#    <div class="post">#}
+{#        <input type="text"#}
+{#               class="form-control border-top-0 border-left-0 border-right-0"#}
+{#               id="title" placeholder="这里输入标题...">#}
+{#    </div>#}
+{##}
+{#    <div class="mt-3" id="editor">#}
+{#        <p>这里开始输入内容...</p>#}
+{#    </div>#}
+
+    <div class="card border-0">
+        <div class="card-body p-0">
+            <div class="card-title">
+                <input type="text" class="form-control border-top-0 border-left-0 border-right-0" id="title" placeholder="这里输入标题...">
+            </div>
+            <div class="card-text" id="editor">
+            </div>
+            <button class="card-link btn btn-outline-success btn-sm mt-3" id="send-post">
+                <i class="fa fa-send-o" aria-hidden="true"></i> 发布
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
+    <script type="text/javascript" src="{% static 'wangeditor/wangEditor.min.js' %}"></script>
+
+    <script type="text/javascript">
+        var E = window.wangEditor;
+        var editor = new E('#editor');
+        // 或者 var editor = new E( document.getElementById('editor') )
+        editor.create();
+        $('button#send-post').click(function () {
+            var postTitle =  $.trim($('input#title').val());
+            var postBody =  $.trim(editor.txt.html());
+
+            if (postBody === "<p><br></p>" || postTitle === ''){
+                tips('标题和内容都不能为空~', 'danger');
+                return false;
+            }
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/post/add/',
+                data: {'title': postTitle, 'body': postBody},
+                async: true,
+                success: function (data) {
+                    if (data['msg'] == 'ok'){
+                        tips('发布成功，页面即将刷新~', 'success');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                        return true;
+                    } else {
+                        tips('发布失败, 请稍后重试', 'danger');
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

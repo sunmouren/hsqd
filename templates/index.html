@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    首页
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+      <h1 class="display-4">Hello, world!</h1>
+      <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+      <hr class="my-4">
+      <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+      <p class="lead">
+        <a class="btn btn-primary btn-lg" href="#" role="button">加入我们</a>
+      </p>
+    </div>
+    <div class="ml-1">
+        <h6 class="border-bottom border-gray pb-2 mb-0">热门博客</h6>
+        <div class="media text-muted pt-3">
+          <img src="{{ request.user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">@username</strong>
+            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+          </p>
+        </div>
+        <div class="media text-muted pt-3">
+          <img src="{{ request.user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">@username</strong>
+            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+          </p>
+        </div>
+
+        <div class="media text-muted pt-3">
+          <img src="{{ request.user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">@username</strong>
+            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+          </p>
+        </div>
+
+        <small class="d-block text-right mt-3">
+          <a href="">全部博客</a>
+        </small>
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    <div class="sidebar">
+        <h6 class="border-bottom border-gray pb-2 mb-0">最新活动</h6>
+
+        <div class="card border-0 mt-2">
+          <div class="card-body p-1">
+            <h5 class="card-title"><a href="">大数据基础</a></h5>
+            <h6 class="card-subtitle mb-1 text-muted">孙某人</h6>
+            <p class="card-text small pb-3 mb-0 border-bottom border-gray text-truncate">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+        </div>
+
+        <div class="card border-0 mt-2">
+          <div class="card-body p-1">
+            <h5 class="card-title"><a href="">数据结构</a></h5>
+            <h6 class="card-subtitle mb-1 text-muted">孙某人</h6>
+            <p class="card-text small pb-3 mb-0 border-bottom border-gray text-truncate">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+        </div>
+
+        <div class="card border-0 mt-2">
+          <div class="card-body p-1">
+            <h5 class="card-title"><a href="">Deep Learning With Python</a></h5>
+            <h6 class="card-subtitle mb-1 text-muted">孙某人</h6>
+            <p class="card-text pb-3 mb-0 border-bottom border-gray text-truncate">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+        </div>
+
+{#        <small class="d-block small text-right mt-3">#}
+{#          <a href="">全部</a>#}
+{#        </small>#}
+    </div>
+{% endblock %}

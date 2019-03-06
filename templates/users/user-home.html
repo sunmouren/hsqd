@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load activity_tags %}
+
+{% block title %}
+    用户主页
+{% endblock %}
+
+
+{% block content %}
+    <h6 class="border-bottom border-gray pb-2 text-success">创建的博客</h6>
+    <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+        暂无博客
+    </div>
+    <h6 class="border-bottom border-gray pb-2 text-success">参加的活动</h6>
+    {% for activity in join_activities %}
+        <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+            <div class="card border-0">
+              <div class="card-body bg-light">
+                  <h5 class="card-title mb-3">
+                      <a href="#">{{ activity.title }}</a>
+                  </h5>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      地点: {{ activity.address }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      时间: {{ activity.start_time }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      创建者: {{ activity.creator }}
+                  </h6>
+                  {% is_signed_activity user activity as is_joined %}
+                  <button type="button"
+                          class="btn btn-sm {% if is_joined %}
+                            btn-success
+                          {% else %}
+                            btn-danger
+                          {% endif %} border-0" disabled>
+                  {% if is_joined %}
+                      已签到
+                  {% else %}
+                      未签到
+                  {% endif %}
+                  </button>
+              </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+            暂无参加的活动
+        </div>
+    {% endfor %}
+    <h6 class="border-bottom border-gray pb-2 text-success">创建的活动</h6>
+    {% for activity in created_activities %}
+        <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+            <div class="card border-0">
+              <div class="card-body bg-light">
+                  <h5 class="card-title mb-3">
+                      <a href="#">{{ activity.title }}</a>
+                  </h5>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      地点: {{ activity.address }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      时间: {{ activity.start_time }}
+                  </h6>
+                  <h6 class="card-subtitle mb-3 text-muted">
+                      创建者: {{ activity.creator }}
+                  </h6>
+              </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="d-flex align-items-center p-2 my-3 text-white-50 bg-light rounded ">
+            暂无创建的活动
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+    <div class="sidebar">
+        <h6 class="border-bottom border-gray pb-2 mb-0">个人主页</h6>
+        <div class="media text-muted pt-3">
+            <img src="{{ user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+            <div class="media-body pb-3 mb-0 small lh-125">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <strong class="text-gray-dark">{{ user }}</strong>
+                </div>
+                <span class="d-block">{{ user.date_joined|timesince }}前加入</span>
+            </div>
+        </div>
+        {% ifequal user request.user %}
+            <a class="btn btn-outline-info mt-3 btn-block" href="#" role="button">
+               <i class="fa fa-edit"></i> 编辑资料
+            </a>
+
+        {% endifequal %}
+    </div>
+{% endblock %}

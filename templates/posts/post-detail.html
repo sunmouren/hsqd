@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/post-css.css' %}" />
+{% endblock %}
+
+{% block title %}
+    文章详情
+{% endblock %}
+
+
+{% block content %}
+    <h6 class="border-bottom border-gray pb-2 mb-0">博客详情 <small class="ml-2">发布于: {{ post.created }}</small></h6>
+    <div class="card border-0">
+        <div class="card-body pl-0">
+
+            <h3 class="card-title" id="post-title">
+                {{ post.title }}
+            </h3>
+
+            <div class="card-text" id="post-body">
+                {{ post.body|safe }}
+            </div>
+        </div>
+    </div>
+
+    {% with comments.count as comment_count %}
+        <h6 class="border-bottom border-gray pb-2 mb-0"><i class="fa fa-comments-o" aria-hidden="true"></i> 问答(<span class="review-count">{{ comment_count }}</span>)</h6>
+    {% endwith %}
+
+    <div class="review-list">
+            {% for comment in comments %}
+                <div class="card border-0 mt-3 mb-4">
+                  <div class="card-body p-0">
+                      <h6 class="card-title">
+                          <img src="{{ comment.user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+                          <a target="_blank" href="{{ comment.user.get_absolute_url }}">{{ comment.user }}</a>
+                      </h6>
+                      <div class="card-text">
+                          {{ comment.content }}
+                          {% if comment.parent %}
+                               <div class="d-flex align-items-center pt-3 pl-2 my-2 text-white-50 bg-light rounded">
+                                    {{ comment.parent.content }}
+                                </div>
+                          {% endif %}
+                      </div>
+
+                      <span class="card-link">
+                         {{ comment.created }}
+                      </span>
+                        {% if comment.parent %}
+                           <a target="_blank" class="card-link ml-1" href="{{ comment.parent.user.get_absolute_url }}">@{{ comment.parent.user }}</a>
+                        {% endif %}
+                      {% if request.user.is_authenticated %}
+                            <button type="button" class="card-link btn btn-outline-info btn-sm border-0 float-right"
+                                    data-pid="{{ comment.id }}"
+                                    data-postid="{{ comment.video.id }}"
+                                    data-toggle="modal"
+                                    data-target="#review-modal"
+                                    data-title="写回答 @{{ comment.user }}">
+                                <i class="fa fa-pencil" aria-hidden="true"></i> 写回答
+                            </button>
+                      {% endif %}
+                  </div>
+                </div>
+                 <div class="dropdown-divider"></div>
+            {% empty %}
+                <p class="pt-2 no-review">暂无问答</p>
+            {% endfor %}
+         </div>
+{% endblock %}
+
+
+{% block sidebar %}
+    <h6 class="border-bottom border-gray pb-2 mb-3">作者</h6>
+    <div class="media text-muted">
+        <img src="{{ post.user.avatar_url }}" alt="" class="user-avatar mr-2 rounded">
+        <div class="media-body pb-3 mb-0 small  lh-125">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong class="text-gray-dark">{{ post.user }}</strong>
+            </div>
+            <span class="d-block">{{ post.user.date_joined|timesince }}前加入</span>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <div class="mt-3">
+            <button type="button"
+                data-pid="0"
+                data-postid="{{ post.id }}"
+                data-toggle="modal"
+                data-target="#review-modal"
+                data-title="发布问答"
+                class="btn btn-info btn-block mt-3">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> 发布问答
+            </button>
+        </div>
+    {% endif %}
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="review-modal" tabindex="-1" role="dialog" aria-labelledby="review-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="review-form">
+                <div class="card border-0">
+                    <div class="card-body p-0">
+        {#                <h5 class="card-title">Special title treatment</h5>#}
+                        <p class="card-text">
+                            <textarea class="form-control review-content" rows="4"></textarea>
+                        </p>
+{#                        <a href="http://www.markdown.cn/" target="_blank" class="card-link">支持Markdown语法</a>#}
+                        <button data-pid="0"
+                                data-vid="0"
+                                class="card-link btn btn-outline-success float-right send-review">
+                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i> 发布
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $("div#post-body").find("img").css({
+            "width": "100%"
+        });
+    </script>
+
+{% endblock %}
